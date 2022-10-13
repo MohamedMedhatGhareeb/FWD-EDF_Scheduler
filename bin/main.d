@@ -9,7 +9,7 @@
 .\bin\main.o: ..\..\Source\include\projdefs.h
 .\bin\main.o: ..\..\Source\include\portable.h
 .\bin\main.o: ..\..\Source\include\deprecated_definitions.h
-.\bin\main.o: ..\..\Source\include\..\..\Source\portable\RVDS\ARM7_LPC21xx\portmacro.h
+.\bin\main.o: .\..\..\Source\portable\RVDS\ARM7_LPC21xx\portmacro.h
 .\bin\main.o: ..\..\Source\include\mpu_wrappers.h
 .\bin\main.o: ..\..\Source\include\task.h
 .\bin\main.o: ..\..\Source\include\list.h

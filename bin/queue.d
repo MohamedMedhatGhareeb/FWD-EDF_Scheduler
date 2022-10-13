@@ -9,7 +9,7 @@
 .\bin\queue.o: ..\..\Source\include\projdefs.h
 .\bin\queue.o: ..\..\Source\include\portable.h
 .\bin\queue.o: ..\..\Source\include\deprecated_definitions.h
-.\bin\queue.o: ..\..\Source\include\..\..\Source\portable\RVDS\ARM7_LPC21xx\portmacro.h
+.\bin\queue.o: .\..\..\Source\portable\RVDS\ARM7_LPC21xx\portmacro.h
 .\bin\queue.o: ..\..\Source\include\mpu_wrappers.h
 .\bin\queue.o: ..\..\Source\include\task.h
 .\bin\queue.o: ..\..\Source\include\list.h

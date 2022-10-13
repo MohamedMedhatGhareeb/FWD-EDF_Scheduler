@@ -8,7 +8,7 @@
 .\bin\port.o: ..\..\Source\include\projdefs.h
 .\bin\port.o: ..\..\Source\include\portable.h
 .\bin\port.o: ..\..\Source\include\deprecated_definitions.h
-.\bin\port.o: ..\..\Source\include\..\..\Source\portable\RVDS\ARM7_LPC21xx\portmacro.h
+.\bin\port.o: .\..\..\Source\portable\RVDS\ARM7_LPC21xx\portmacro.h
 .\bin\port.o: ..\..\Source\include\mpu_wrappers.h
 .\bin\port.o: ..\..\Source\include\task.h
 .\bin\port.o: ..\..\Source\include\list.h

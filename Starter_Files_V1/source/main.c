@@ -74,8 +74,22 @@
 /* Constants for the ComTest demo application tasks. */
 #define mainCOM_TEST_BAUD_RATE	( ( unsigned long ) 115200 )
 
-TaskHandle_t ButtonTaskHandle = NULL;
-TaskHandle_t LEDTaskHandle = NULL;
+TaskHandle_t Button_1_MonitorHandle = NULL;
+TaskHandle_t Button_2_MonitorHandle = NULL;
+TaskHandle_t Periodic_TransmitterHandle = NULL;
+TaskHandle_t Uart_ReceiverHandle = NULL;
+
+#define Button_1_Monitor_Period       50
+#define Button_2_Monitor_Period       50
+#define Periodic_Transmitter_Period   100
+#define Uart_Receiver_Period       		20
+
+#define Button_1_Monitor_Deadline       50
+#define Button_2_Monitor_Deadline       50
+#define Periodic_Transmitter_Deadline   100
+#define Uart_Receiver_Deadline       		20
+
+
 /*
  * Configure the processor for use with the Keil demo board.  This is very
  * minimal as most of the setup is managed by the settings in the project
@@ -83,37 +97,64 @@ TaskHandle_t LEDTaskHandle = NULL;
  */
 static void prvSetupHardware( void );
 /*-----------------------------------------------------------*/
-pinState_t buttonstate;
+pinState_t button_1,button_2;
 
 /* Task to be created. */
-void Button_Task( void * pvParameters )
+void Button_1_Monitor( void * pvParameters )
 { 
-
+	TickType_t xLastWakeTime;
     for( ;; )
     {
         /* Task code goes here. */
-			buttonstate = GPIO_read(PORT_0,PIN0);
-			
-			vTaskDelay( 100 );
+			button_1 = GPIO_read(PORT_0,PIN0);
+			//send to consumer task
+
+			xLastWakeTime = xTaskGetTickCount();
+			vTaskDelayUntil( &xLastWakeTime, Button_1_Monitor_Period );
 			
     }
 }
 
-
-void LED_Task( void * pvParameters )
+void Button_2_Monitor( void * pvParameters )
 { 
-
+	TickType_t xLastWakeTime;
     for( ;; )
     {
         /* Task code goes here. */
-			if(buttonstate == PIN_IS_HIGH)	GPIO_write(PORT_0,PIN1,PIN_IS_HIGH);
-			else  GPIO_write(PORT_0,PIN1,PIN_IS_LOW);
+			button_2 = GPIO_read(PORT_0,PIN1);
+			//send to consumer task
 			
-			vTaskDelay( 200 );
+			xLastWakeTime = xTaskGetTickCount();
+			vTaskDelayUntil( &xLastWakeTime, Button_2_Monitor_Period );
 			
     }
 }
 
+void Periodic_Transmitter( void * pvParameters )
+{ 
+	TickType_t xLastWakeTime;
+    for( ;; )
+    {
+        /* Task code goes here. */
+			
+			xLastWakeTime = xTaskGetTickCount();
+			vTaskDelayUntil( &xLastWakeTime, Periodic_Transmitter_Period );
+			
+    }
+}
+
+void Uart_Receiver( void * pvParameters )
+{ 
+	TickType_t xLastWakeTime;
+    for( ;; )
+    {
+        /* Task code goes here. */
+			
+			xLastWakeTime = xTaskGetTickCount();
+			vTaskDelayUntil( &xLastWakeTime, Uart_Receiver_Period );
+			
+    }
+}
 
 /*
  * Application entry point:
@@ -128,22 +169,43 @@ int main( void )
     /* Create Tasks here */
 	
 	/* Create the task, storing the handle. */
-   xTaskCreate(
-                    Button_Task,       /* Function that implements the task. */
-                    "Button_Task",          /* Text name for the task. */
+	xTaskPeriodicCreate(
+                    Button_1_Monitor,       /* Function that implements the task. */
+                    "Button_1_Monitor",          /* Text name for the task. */
                     100,      /* Stack size in words, not bytes. */
                     ( void * ) 0,    /* Parameter passed into the task. */
                     1,/* Priority at which the task is created. */
-                    &ButtonTaskHandle );      /* Used to pass out the created task's handle. */
+                    &Button_1_MonitorHandle,   /* Used to pass out the created task's handle. */
+										Button_1_Monitor_Period);  /* Function Period */    
 
- xTaskCreate(
-                    LED_Task,       /* Function that implements the task. */
-                    "LED_Task",          /* Text name for the task. */
+	xTaskPeriodicCreate(
+                    Button_2_Monitor,       /* Function that implements the task. */
+                    "Button_2_Monitor",          /* Text name for the task. */
                     100,      /* Stack size in words, not bytes. */
                     ( void * ) 0,    /* Parameter passed into the task. */
                     1,/* Priority at which the task is created. */
-                    &LEDTaskHandle );      /* Used to pass out the created task's handle. */
-
+                    &Button_2_MonitorHandle,   /* Used to pass out the created task's handle. */
+										Button_2_Monitor_Period);  /* Function Period */    
+										
+	xTaskPeriodicCreate(
+                    Periodic_Transmitter,       /* Function that implements the task. */
+                    "Periodic_Transmitter",          /* Text name for the task. */
+                    100,      /* Stack size in words, not bytes. */
+                    ( void * ) 0,    /* Parameter passed into the task. */
+                    1,/* Priority at which the task is created. */
+                    &Periodic_TransmitterHandle,   /* Used to pass out the created task's handle. */
+										Periodic_Transmitter_Period);  /* Function Period */    
+										
+	xTaskPeriodicCreate(
+                    Uart_Receiver,       /* Function that implements the task. */
+                    "Uart_Receiver",          /* Text name for the task. */
+                    100,      /* Stack size in words, not bytes. */
+                    ( void * ) 0,    /* Parameter passed into the task. */
+                    1,/* Priority at which the task is created. */
+                    &Uart_ReceiverHandle,   /* Used to pass out the created task's handle. */
+										Uart_Receiver_Period);  /* Function Period */    
+	
+ 
 	
 	/* Now all the tasks have been started - start the scheduler.
 
